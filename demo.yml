@@ -1,0 +1,42 @@
+##Deploy
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+  labels:
+    app: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      containers:
+        - name: demo
+          image: acrvmam03.azurecr.io/demo
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      imagePullSecrets:
+        - name: regcred
+---
+##Service
+kind: Service
+apiVersion: v1
+metadata:
+  name: demo
+spec:
+  selector:
+    app: demo
+  ports:
+    - port: 8880
+      targetPort: 8880
+  type: LoadBalancer
